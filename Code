@@ -1,0 +1,122 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from tqdm import tqdm
+
+df = pd.read_csv(r"C:\Users\Asus\Downloads\Amazon Sale Report.csv")
+df
+
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+
+# DISTRIBUTION OF PRODUCT CATEGORIES
+category_counts = df['Category'].value_counts()
+print(category_counts)
+plt.figure(figsize=(10, 5))
+sns.barplot(x=category_counts.index, y=category_counts.values)
+plt.title('Distribution of Product Categories')
+plt.xlabel('Category')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()            
+
+#DISTRIBUTION OF PRODUCT SIZES
+size_counts = df['Size'].value_counts()
+print(size_counts)
+plt.figure(figsize=(12, 6))
+sns.barplot(x=size_counts.index, y=size_counts.values)
+plt.title('Distribution of Product Sizes')
+plt.xlabel('Size')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+#Distribution of Quantities Sold
+quantity_counts = df['Qty'].value_counts()
+print(quantity_counts)
+plt.figure(figsize=(12, 6))
+sns.barplot(x=quantity_counts.index, y=quantity_counts.values)
+plt.title('Distribution of Quantities Sold')
+plt.xlabel('Quantity')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+#Popular Products
+popular_products = df.groupby(['Category'])['Qty'].sum().sort_values(ascending=False)
+print(popular_products)
+plt.figure(figsize=(20, 10))
+popular_products.plot(kind='bar', stacked=True)
+plt.title('Popular Products')
+plt.xlabel('Category')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+#Distribution of Fulfillment Methods
+fulfillment_counts = df['Fulfilment'].value_counts()
+print(fulfillment_counts)
+plt.figure(figsize=(12, 6))
+sns.barplot(x=fulfillment_counts.index, y=fulfillment_counts.values)
+plt.title('Distribution of Fulfillment Methods')
+plt.xlabel('Fulfillment Method')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+#Effectiveness of Fulfillment Methods in Delivering Orders
+effectiveness = df.groupby(['Fulfilment', 'Courier Status']).size().unstack().fillna(0)
+print(effectiveness)
+plt.figure(figsize=(12, 6))
+effectiveness.plot(kind='bar', stacked=True)
+plt.title('Effectiveness of Fulfillment Methods in Delivering Orders')
+plt.xlabel('Fulfillment Method')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.legend(title='Courier Status')
+plt.show()
+
+#Orders from Top 10 States
+States_count = df['ship-state'].value_counts()
+print(States_count)
+States_count_top = States_count.head(10)
+States_count_top
+plt.figure(figsize=(30, 10))
+States_count_top.plot(kind='bar', stacked=True)
+plt.title('Orders from Top 10 States')
+plt.xlabel('States')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+#Sales from Top 10 States
+State_Sales = df.groupby(['ship-state'] , as_index = False)["Amount"].sum()
+State_Sales_top = State_Sales.sort_values('Amount' ,  ascending=False).head(10)
+State_Sales_top = State_Sales_top.set_index('ship-state')
+amount_counts = State_Sales_top['Amount'].value_counts()
+print(amount_counts)
+plt.figure(figsize=(20,10))
+sns.barplot(x=State_Sales_top.index, y=amount_counts.index)
+plt.title('Sales from Top 10 States')
+plt.xlabel('States')
+plt.ylabel('Amount')
+plt.xticks(rotation=45)
+plt.show()
+
+#Sales from Different Categories'
+Category_Sales = df.groupby(['Category'])['Amount'].sum().sort_values(ascending=False)
+print(Category_Sales)
+plt.figure(figsize=(20,10))
+sns.barplot(x=Category_Sales.index, y=Category_Sales.values )
+plt.title('Sales from Different Categories')
+plt.xlabel('Category')
+plt.ylabel('Amount')
+plt.xticks(rotation=45)
+plt.show()
+
+
+
+
+
+
+
