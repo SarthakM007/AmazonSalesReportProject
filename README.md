@@ -1,1 +1,1 @@
-# AmazonSalesReportProject
+# Project for Amazon Sales Report
